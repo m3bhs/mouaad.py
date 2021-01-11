@@ -1,0 +1,130 @@
+from collections import deque
+
+class GraphMatrix:
+
+	def __init__(self, n):
+		''' nbr: number of vertices '''
+		''' adj_matrix: Matrix representation of the graph'''
+
+		self.nbr = n
+		self.adj_matrix = []
+
+		# Initialize the matrix to zeroes
+		for i in range(self.nbr):
+			self.adj_matrix.append([0] * self.nbr)
+
+	def print_graph(self):
+		""" Print the graph's matrix """
+		for i in range(self.nbr):
+			print(self.adj_matrix[i])
+	
+
+	def print_BFS(self, start = 0):
+		"""Print the BFS brows"""
+		queue = deque()
+		visited = [0] * self.nbr
+		queue.append(start)
+		while(queue):
+			a = queue.popleft()
+			if(visited[a] == 0):
+				print("V"+str(a), end=", ")
+				for i in range(self.nbr):
+					if(self.adj_matrix[a][i] == 1):
+						if(visited[i] == 0):
+							queue.append(i)
+				visited[a] = 1
+		print()
+
+
+	# A function used by DFS 
+	def DFSUtil(self, v, visited): 
+
+		# Mark the current node as visited  
+		# and print it 
+		visited[v] = True
+		print('V'+str(v), end = ', ') 
+
+		# Recur for all the vertices  
+		# adjacent to this vertex 
+		for i in range(self.nbr):
+			if(self.adj_matrix[v][i] == 1):
+				if visited[i] == False: 
+					self.DFSUtil(i, visited) 
+
+	# The function to do DFS traversal. It uses 
+	# recursive DFSUtil() 
+	def print_DFS(self, v): 
+		# Mark all the vertices as not visited 
+		visited = [False] * self.nbr
+
+		# Call the recursive helper function  
+		# to print DFS traversal 
+		self.DFSUtil(v, visited)
+	
+
+	def add_vertices(self, nv):
+		""" Add nv vertices to the graph"""
+		if nv < 0: return
+		for j in range(self.nbr):
+			self.adj_matrix[j] += [0] * nv
+		
+		self.nbr += nv
+
+		for i in range(nv):
+			self.adj_matrix.append([0] * self.nbr)
+
+		
+	def Is_Connexe(self):
+		"""method Is_Connexe, test if a graph connexe or not
+		by browsing it using BFS """
+		
+		queue = deque()
+		visited = [0] * self.nbr
+		
+		a = 0
+		queue.append(a)
+	
+		while(queue):
+			a = queue.popleft()
+			if(visited[a] == 0):
+				for i in range(self.nbr):
+						if(self.adj_matrix[a][i] == 1):
+							if(visited[i] == 0 and i not in queue):
+								queue.append(i)
+
+				visited[a] = 1
+		
+		return all([x == 1 for x in visited]) # i.e., (visited.count(1) == len(visited))
+
+	def BFS_SP(self, start, end):
+		"""Return the shortest path between two vertices s (start) and e (end)"""
+		queue = deque()
+		path = []
+		parents = [-1] * self.nbr
+		visited = [0] * self.nbr
+		
+		queue.append(start)
+		path.append(end)
+
+		while(queue):
+			a = queue.popleft()
+			if(visited[a] == 0):
+				for i in range(self.nbr):
+						if(self.adj_matrix[a][i] == 1):
+							if(visited[i] == 0 and i not in queue):
+								parents[i] = a
+								queue.append(i)
+				visited[a] = 1
+
+		dst = end
+		# No Path has been found
+		if parents[end] == -1 : return []
+
+		while dst != start:
+			p = parents[dst]
+			if p not in path:
+				path.append(p)
+			dst = p
+
+		path.reverse()
+		return path

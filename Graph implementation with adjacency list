@@ -1,0 +1,36 @@
+from collections import defaultdict
+
+class GraphList:
+	"""Class Graph, ajecancy list"""
+	def __init__(self):
+		self.edgeslist = defaultdict(list)
+
+	def add_edge(self, s, d):
+		"""Add an edge between vertice s and vertice d"""
+		self.edgeslist[s].append(d)
+
+	def print_graph(self):
+		""" Print the graph"""
+		for i in range(len(self.edgeslist)):
+			print(i," : ",self.edgeslist[i])
+
+	def DFS(self, s, V):
+		""" Brows the graph using DFS, starting from vertice s"""
+		if not V[s]:
+			V[s] = 1
+			for n in self.edgeslist[s]:
+				self.DFS(n,V)
+
+		return V
+
+	def Is_Connexe(self):
+		"""method Is_Connexe, test if a graph connexe or not
+		by browsing it using DFS """
+		a = 0
+		V = [0]*len(self.edgeslist)
+		V = self.DFS(a,V)
+		
+		return all([x == 1 for x in V])
+    
+    
+    print ("It is connexe" if Gm.Is_Connexe() else "No, it's not connexe")
